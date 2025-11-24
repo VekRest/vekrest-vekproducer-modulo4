@@ -2,37 +2,46 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
+
+	<groupId>com.vekrest.vekproducer</groupId>
+	<artifactId>vekproducer</artifactId>
+	<version>v1.0.0</version>
+
+	<name>vekproducer</name>
+	<description>VekMódulo de Producer Kafka com Endpoint Rest</description>
+	<url>https://github.com/VekRest/vekrest-vekproducer-modulo4</url>
+
 	<parent>
 		<groupId>org.springframework.boot</groupId>
 		<artifactId>spring-boot-starter-parent</artifactId>
 		<version>3.5.8</version>
-		<relativePath/> <!-- lookup parent from repository -->
+		<relativePath/>
 	</parent>
-	<groupId>com.vekrest.vekproducer</groupId>
-	<artifactId>vekproducer</artifactId>
-	<version>0.0.1-SNAPSHOT</version>
-	<name>vekproducer</name>
-	<description>VekMódulo de Producer Kafka com Endpoint Rest</description>
-	<url/>
+
 	<licenses>
-		<license/>
+		<license>
+			<name>GPL-3.0</name>
+			<url>https://www.gnu.org/licenses/gpl-3.0.en.html</url>
+			<distribution>repo</distribution>
+		</license>
 	</licenses>
 	<developers>
-		<developer/>
+		<developer>
+			<id>devVekRest</id>
+			<name>Victor Novaes Cardoso (Vek)</name>
+			<email>victorncardoso1912@gmail.com</email>
+		</developer>
 	</developers>
-	<scm>
-		<connection/>
-		<developerConnection/>
-		<tag/>
-		<url/>
-	</scm>
-	<properties>
-		<java.version>17</java.version>
-	</properties>
+
 	<dependencies>
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter</artifactId>
+		</dependency>
+
+		<dependency>
+			<groupId>org.springframework.kafka</groupId>
+			<artifactId>spring-kafka</artifactId>
 		</dependency>
 
 		<dependency>
@@ -51,4 +60,19 @@
 		</plugins>
 	</build>
 
+	<properties>
+		<java.version>17</java.version>
+
+		<sonar.host.url>https://sonarcloud.io</sonar.host.url>
+		<sonar.projectKey>vekproducer</sonar.projectKey>
+		<sonar.organization>vekrest</sonar.organization>
+	</properties>
+
+	<distributionManagement>
+		<repository>
+			<id>github</id>
+			<name>GitHub Packages</name>
+			<url>https://maven.pkg.github.com/VekRest/vekrest-vekproducer-modulo4</url>
+		</repository>
+	</distributionManagement>
 </project>
