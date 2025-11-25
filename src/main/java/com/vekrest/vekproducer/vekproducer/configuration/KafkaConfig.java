@@ -1,4 +1,4 @@
-package com.vekrest.vekproducer.vekproducer.config;
+package com.vekrest.vekproducer.vekproducer.configuration;
 
 import org.apache.kafka.clients.admin.NewTopic;
 import org.springframework.beans.factory.annotation.Value;
