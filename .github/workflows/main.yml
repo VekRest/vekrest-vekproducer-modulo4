@@ -4,11 +4,11 @@ on:
   push:
     tags: ['v*', 'v*.*', 'v*.*.*']
   workflow_dispatch:
-    
+
 
 jobs:
   ci:
-    uses: VekRest/VekRest/workflows/.github/workflows/main-template.yml@main
+    uses: VekRest/workflow-templates/.github/workflows/main-template.yml@main
     with:
       sonar_project_key: vekproducer
       sonar_org: vekrest
