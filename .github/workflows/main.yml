@@ -164,7 +164,7 @@ jobs:
         env:
           GH_OWNER: ${{ github.repository_owner }}
           GH_REPO: ${{ github.repository }}
-          GH_TOKEN: ${{ github.token }}
+          GH_TOKEN: ${{ secrets.RELEASE_TOKEN }}
           TAG: "v1.0.0"
         run: |
           echo "Checking for package version: $TAG"
