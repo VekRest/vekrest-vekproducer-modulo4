@@ -8,8 +8,8 @@ import org.springframework.context.annotation.Configuration;
 @Configuration
 public class KafkaConfig {
     @Bean
-    public NewTopic coxinhaTopic(
-            @Value("${spring.kafka.topic.client.update}") String topicName,
+    public NewTopic clientRegisteredTopic(
+            @Value("${spring.kafka.topic.client.registered}") String topicName,
             @Value("${spring.kafka.partitions}") int partitions,
             @Value("${spring.kafka.replicas}") short replicas) {
         return new NewTopic(topicName, partitions, replicas);

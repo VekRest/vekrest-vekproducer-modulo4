@@ -1,6 +1,5 @@
 package com.vekrest.vekproducer.vekproducer.event;
 
-import com.vekrest.vekproducer.vekproducer.VekproducerApplication;
 import com.vekrest.vekproducer.vekproducer.entities.Client;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -21,7 +20,7 @@ public class ClientEventProducer {
 
     public ClientEventProducer(
             KafkaTemplate<String, Client> kafkaTemplate,
-            @Value("${spring.kafka.topic.client.update}") String topic
+            @Value("${spring.kafka.topic.client.registered}") String topic
     ) {
         this.topic = topic;
         this.kafkaTemplate = kafkaTemplate;
