@@ -252,7 +252,7 @@ jobs:
         with:
           registry: ${{ env.REGISTRY }}
           username: ${{ github.actor }}
-          password: ${{ secrets.GITHUB_TOKEN }}
+          password: ${{ secrets.RELEASE_TOKEN }}
 
       - name: Extract Docker metadata
         id: meta
@@ -268,49 +268,65 @@ jobs:
           TAG: ${{ github.ref_name }}
         run: |
           echo "🔍 Checking if Docker image exists: $IMAGE_NAME:$TAG"
-          
           PACKAGE_TYPE="container"
-          
-          # Endpoint base do pacote
-          API_BASE="https://api.github.com/users/$GH_OWNER/packages/$PACKAGE_TYPE/$IMAGE_NAME"
-          
-          # Buscar ID da versão correspondente à tag
-          VERSION_ID=$(curl -s -H "Authorization: Bearer $GH_TOKEN" "$API_BASE/versions" \
-            | jq ".[] | select(.metadata.container.tags[]? == \"$TAG\") | .id")
-          
-          if [ -z "$VERSION_ID" ]; then
-            echo "✔️ No image version with tag '$TAG' exists."
+          # extrai SOMENTE o nome da imagem (sem owner) e converte para lowercase
+          PKG_NAME=$(echo "$IMAGE_NAME" | awk -F'/' '{print tolower($NF)}')
+          echo "📦 Using GHCR package name: $PKG_NAME"
+          API_BASE="https://api.github.com/orgs/$GH_OWNER/packages/$PACKAGE_TYPE/$PKG_NAME"
+          echo "➡️ Querying: $API_BASE/versions"
+          RESPONSE=$(curl -s -H "Authorization: Bearer $GH_TOKEN" "$API_BASE/versions")
+          # Se não for array, o package não existe
+          if ! echo "$RESPONSE" | jq -e 'type=="array"' >/dev/null 2>&1; then
+            echo "✔️ No package exists in GHCR. Nothing to delete."
             exit 0
           fi
-          
-          echo "🗑️ Found image version id: $VERSION_ID. Attempting delete..."
-          
+          VERSION_ID=$(echo "$RESPONSE" | jq ".[] | select(.metadata.container.tags[]? == \"$TAG\") | .id")
+          if [ -z "$VERSION_ID" ]; then
+            echo "✔️ No version with tag '$TAG' exists."
+            exit 0
+          fi
+          echo "🗑️ Found version id: $VERSION_ID. Attempting deletion..."
           DELETE_RESPONSE=$(curl -s -o /tmp/delete_output.txt -w "%{http_code}" \
             -X DELETE \
             -H "Authorization: Bearer $GH_TOKEN" \
             "$API_BASE/versions/$VERSION_ID")
-          
           if [ "$DELETE_RESPONSE" -eq 204 ]; then
             echo "✔️ Tag version deleted successfully."
             exit 0
           fi
-          
           ERROR_MSG=$(cat /tmp/delete_output.txt | jq -r '.message')
-          
           if [[ "$ERROR_MSG" == *"You cannot delete the last version of a package"* ]]; then
-            echo "⚠️ Cannot delete last version. Deleting entire Docker package $IMAGE_NAME..."
-          
-            curl -X DELETE \
+            echo "⚠️ Cannot delete last version. Deleting entire Docker package $PKG_NAME..."
+            curl -s -X DELETE \
               -H "Authorization: Bearer $GH_TOKEN" \
               "$API_BASE"
-          
-            echo "✔️ Entire Docker image package deleted."
+            echo "✔️ Entire Docker package deleted."
             exit 0
           fi
-          
           echo "❌ Unexpected error deleting Docker tag:"
           echo "$ERROR_MSG"
           exit 1
+
+      - name: Build with Maven (without tests)
+        run: mvn clean install -DskipTests
+
+      - name: Build and push Docker image
+        id: build-and-push
+        uses: docker/build-push-action@v5.0.0
+        with:
+          context: .
+          push: ${{ github.event_name != 'pull_request' }}
+          tags: ${{ steps.meta.outputs.tags }}
+          labels: ${{ steps.meta.outputs.labels }}
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+
+      - name: Sign the published Docker image
+        if: ${{ github.event_name != 'pull_request' }}
+        env:
+          TAGS: ${{ steps.meta.outputs.tags }}
+          DIGEST: ${{ steps.build-and-push.outputs.digest }}
+        run: echo "${TAGS}" | xargs -I {} cosign sign --yes {}@${DIGEST}
 
       - name: Build with Maven (without tests)
         run: mvn clean install -DskipTests
