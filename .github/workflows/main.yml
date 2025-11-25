@@ -227,24 +227,24 @@ jobs:
 
   create-release:
     name: Create Release & Generate Changelog
-    needs: [dockerhub-publish, github-packages-maven-publish, github-packages-docker-publish]
+    needs: [ dockerhub-publish, github-packages-maven-publish, github-packages-docker-publish ]
     runs-on: ubuntu-latest
     permissions:
-      contents: write 
+      contents: write
 
     steps:
       - name: ⬇️ Checkout do Código
         uses: actions/checkout@v4
         with:
-          fetch-depth: 0 
+          fetch-depth: 0
 
       - name: Generate Release Body with Logs
         id: generate_changelog
         run: |
           CURRENT_TAG=${{ github.ref_name }}
-          
+
           PREVIOUS_TAG=$(git describe --tags --abbrev=0 "$CURRENT_TAG^" 2>/dev/null || echo "")
-          
+
           echo "Tag Atual: $CURRENT_TAG"
           echo "Tag Anterior: $PREVIOUS_TAG"
           if [ -z "$PREVIOUS_TAG" ]; then
@@ -264,11 +264,11 @@ jobs:
             echo "$LOGS" >> $GITHUB_ENV
             echo "EOF" >> $GITHUB_ENV
           fi
-          
+
       - name: Create GitHub Release
         uses: softprops/action-gh-release@v2
         with:
           tag_name: ${{ github.ref_name }}
           body: ${{ env.RELEASE_BODY }}
           prerelease: ${{ contains(github.ref_name, 'alpha') || contains(github.ref_name, 'beta') || contains(github.ref_name, 'rc') }}
-          token: ${{ github.token }}
+          token: ${{ secrets.GITHUB_TOKEN }}
