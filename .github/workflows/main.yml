@@ -6,7 +6,7 @@ on:
 
 jobs:
   ci:
-    uses: VekRest/workflows/.github/workflows/ci-template.yml@main
+    uses: VekRest/workflows/.github/workflows/main-template.yml@main
     with:
       sonar_project_key: vekproducer
       sonar_org: vekrest
