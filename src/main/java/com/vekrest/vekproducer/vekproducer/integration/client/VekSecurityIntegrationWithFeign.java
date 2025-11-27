@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 
 @FeignClient(
         name = "VekSecurityIntegration",
-        url = "${vekrest.veksecurity.api.url}"
+        url = "${vekrest.veksecurity.api.url}/vekrest/veksecurity/v1"
 )
 public interface VekSecurityIntegrationWithFeign {
     @PostMapping("/login")
