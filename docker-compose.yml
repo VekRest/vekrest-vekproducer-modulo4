@@ -207,6 +207,8 @@ services:
 #    environment:
 #      SERVER_PORT: 8083
 #      KAFKA_BROKERS: kafka1:19092, kafka2:19093, kafka3:19094
+#      REDIS_HOST: redis
+#      REDIS_PORT: 6379
 #      GRAYLOG_HOST: graylog
 #      GRAYLOG_PORT: 12201
 #    depends_on:
