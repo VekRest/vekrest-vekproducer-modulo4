@@ -9,7 +9,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("/v1")
+@RequestMapping("/vekrest/vekproducer/v1")
 public class ClientEventController {
     private final ClientEventProducer producer;
 
