@@ -29,14 +29,17 @@ public class RestExceptionHandler {
     @ExceptionHandler({InternalServerException.class, Exception.class})
     public ErrorResponse handleInternalServerError(
             Exception ex,
-            HttpServletRequest req) {
+            HttpServletRequest req
+    ) {
         LOG.error("HANDLE ERROR ON INTERNAL_SERVER_ERROR", ex);
+
         return new ErrorResponse(
                 LocalDateTime.now(),
                 req.getServletPath(),
                 INTERNAL_SERVER_ERROR.value(),
                 INTERNAL_SERVER_ERROR.getReasonPhrase(),
-                ex.getMessage());
+                ex.getMessage()
+        );
     }
 
     @ResponseBody
@@ -44,14 +47,15 @@ public class RestExceptionHandler {
     @ExceptionHandler(NotFoundException.class)
     public ErrorResponse handleNotFoundError(
             NotFoundException ex,
-            HttpServletRequest req) {
-        LOG.error("HANDLE ERROR ON NOT_FOUND", ex);
+            HttpServletRequest req
+    ) {
         return new ErrorResponse(
                 LocalDateTime.now(),
                 req.getServletPath(),
                 NOT_FOUND.value(),
                 NOT_FOUND.getReasonPhrase(),
-                ex.getMessage());
+                ex.getMessage()
+        );
     }
 
     @ResponseBody
@@ -59,14 +63,15 @@ public class RestExceptionHandler {
     @ExceptionHandler(NoResourceFoundException.class)
     public ErrorResponse handleNoResourceFoundException(
             NoResourceFoundException ex,
-            HttpServletRequest req) {
-        LOG.error("HANDLE ERROR ON NO_RESOURCE_FOUND", ex);
+            HttpServletRequest req
+    ) {
         return new ErrorResponse(
                 LocalDateTime.now(),
                 req.getServletPath(),
                 NOT_FOUND.value(),
                 NOT_FOUND.getReasonPhrase(),
-                ex.getMessage());
+                ex.getMessage()
+        );
     }
 
     @ResponseBody
@@ -74,14 +79,15 @@ public class RestExceptionHandler {
     @ExceptionHandler(BadRequestException.class)
     public ErrorResponse handleBadRequest(
             BadRequestException ex,
-            HttpServletRequest req) {
-        LOG.error("HANDLE ERROR ON BAD_REQUEST", ex);
+            HttpServletRequest req
+    ) {
         return new ErrorResponse(
                 LocalDateTime.now(),
                 req.getServletPath(),
                 BAD_REQUEST.value(),
                 BAD_REQUEST.getReasonPhrase(),
-                ex.getMessage());
+                ex.getMessage()
+        );
     }
 
     @ResponseBody
@@ -89,17 +95,19 @@ public class RestExceptionHandler {
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ErrorResponse handleMethodArgumentNotValid(
             MethodArgumentNotValidException ex,
-            HttpServletRequest req) {
-        LOG.error("HANDLE ERROR ON METHOD_ARGUMENT_NOT_VALID", ex);
+            HttpServletRequest req
+    ) {
         List<String> errors = new ArrayList<>();
         ex.getBindingResult().getAllErrors()
                 .forEach(v -> errors.add(v.getDefaultMessage()));
+
         return new ErrorResponse(
                 LocalDateTime.now(),
                 req.getServletPath(),
                 BAD_REQUEST.value(),
                 BAD_REQUEST.getReasonPhrase(),
-                errors.toString());
+                errors.toString()
+        );
     }
 
     @ResponseBody
@@ -107,13 +115,14 @@ public class RestExceptionHandler {
     @ExceptionHandler(HttpMediaTypeNotAcceptableException.class)
     public ErrorResponse handleHttpMediaTypeNotAcceptableException(
             BadRequestException ex,
-            HttpServletRequest req) {
-        LOG.error("HANDLE ERROR ON BAD_REQUEST", ex);
+            HttpServletRequest req
+    ) {
         return new ErrorResponse(
                 LocalDateTime.now(),
                 req.getServletPath(),
                 BAD_REQUEST.value(),
                 BAD_REQUEST.getReasonPhrase(),
-                ex.getMessage());
+                ex.getMessage()
+        );
     }
 }
